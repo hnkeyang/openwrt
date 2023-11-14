@@ -1,0 +1,40 @@
+Index: backports-20210222_001-4.4.60-b157d2276/include/net/cfg80211.h
+===================================================================
+--- backports-20210222_001-4.4.60-b157d2276.orig/include/net/cfg80211.h
++++ backports-20210222_001-4.4.60-b157d2276/include/net/cfg80211.h
+@@ -5177,6 +5177,8 @@ struct wiphy {
+ 
+ 	const struct cfg80211_sar_capa *sar_capa;
+ 
++	bool dfs_cac_disabled;
++
+ 	char priv[] __aligned(NETDEV_ALIGN);
+ };
+ 
+Index: backports-20210222_001-4.4.60-b157d2276/net/wireless/chan.c
+===================================================================
+--- backports-20210222_001-4.4.60-b157d2276.orig/net/wireless/chan.c
++++ backports-20210222_001-4.4.60-b157d2276/net/wireless/chan.c
+@@ -1198,6 +1198,11 @@ static bool _cfg80211_reg_can_beacon(str
+ 		prohibited_flags = IEEE80211_CHAN_DISABLED;
+ 	}
+ 
++	if (wiphy->dfs_cac_disabled) {
++		prohibited_flags = IEEE80211_CHAN_DISABLED;
++		cfg80211_set_dfs_state(wiphy, chandef, NL80211_DFS_AVAILABLE);
++	}
++
+ 	res = cfg80211_chandef_usable(wiphy, chandef, prohibited_flags);
+ 
+ 	trace_cfg80211_return_bool(res);
+Index: backports-20210222_001-4.4.60-b157d2276/net/wireless/debugfs.c
+===================================================================
+--- backports-20210222_001-4.4.60-b157d2276.orig/net/wireless/debugfs.c
++++ backports-20210222_001-4.4.60-b157d2276/net/wireless/debugfs.c
+@@ -107,4 +107,6 @@ void cfg80211_debugfs_rdev_add(struct cf
+ 	DEBUGFS_ADD(short_retry_limit);
+ 	DEBUGFS_ADD(long_retry_limit);
+ 	DEBUGFS_ADD(ht40allow_map);
++
++	debugfs_create_bool("dfs_cac_disabled", S_IRUSR | S_IWUSR, phyd, &rdev->wiphy.dfs_cac_disabled);
+ }

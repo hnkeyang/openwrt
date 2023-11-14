@@ -1,7 +1,7 @@
 src-include defaults feeds.conf.default
 src-git gl_feeds_wlanap https://github.com/gl-inet/gl-feeds.git^5df1bae20bf4f2bd39168707e6363bcf8bdf5f29
-src-link ipq807x ../../feeds/ipq807x
-src-link wifi_ax ../../feeds/wifi-ax
+src-link ipq807x ../feeds_ax1800/ipq807x
+src-link wifi_ax ../feeds_ax1800/wifi-ax
 src-git gl_feeds_common https://github.com/gl-inet/gl-feeds.git^16d4e89ddfc13ab8551959c3c17dfe7699c709bf
 src-git luci https://github.com/openwrt/luci.git^1c3b32dc1bec15e3076a447762b1c4f94eb75fb7
-src-link glinet ../feeds_dir/glinet
+src-link glinet ../feeds_gl/glinet
